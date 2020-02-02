@@ -1,0 +1,22 @@
+language: python
+sudo: false
+
+env:
+  - LUA="lua=5.1"
+  - LUA="lua=5.2"
+  - LUA="lua=5.3"
+  - LUA="luajit=2.0"
+  - LUA="luajit=2.1"
+
+before_install:
+  - pip install hererocks
+  - hererocks .here --$LUA -rlatest
+  - source .here/bin/activate
+  - luarocks install luacheck
+
+script:
+  - luacheck . --exclude-files .here || [ $? -eq 1 ] # allow warnings (exit code 1)
+
+branches:
+  except:
+    - gh-pages
